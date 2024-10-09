@@ -7,7 +7,9 @@
 
 #if !defined(UBRR1H)
 #include <SoftwareSerial.h>
-SoftwareSerial mySerial(27, 26); // RX, TX
+// 26 va al pin RX del mp3, 27 al pin TX del mp3
+// se pueden definir otros pines del ESP32 para este uso
+SoftwareSerial mySerial(27, 26); 
 #endif
 
 DFPlayerMini_Fast myMP3;
