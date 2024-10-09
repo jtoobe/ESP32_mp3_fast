@@ -55,5 +55,7 @@ void loop() {
   // que si enviamos otra orden a continuacion "corta" lo que esta reproduciendo
   // y ejecuta lo nuevo
 
+  // muestra el numero del archivo que se reproduce
+  Serial.println(myDFPlayer.readCurrentFileNumber());
 
 }
