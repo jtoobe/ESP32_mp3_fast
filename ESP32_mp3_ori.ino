@@ -10,51 +10,61 @@ hay que instalar la libreria ESPSoftwareSerial antes de poder compilar
 
  ****************************************************/
 
-
+#include "SoftwareSerial.h"
 #include "DFRobotDFPlayerMini.h"
-#include <SoftwareSerial.h>
-// 26 va al pin RX del mp3, 27 al pin TX del mp3
-// se pueden definir otros pines del ESP32 para este uso
-SoftwareSerial FPSerial(27, 26);
 
+// Se pueden usar pines distintos a los propuestos
+static const uint8_t PIN_MP3_TX = 26;  // 26 => Mp3 RX
+static const uint8_t PIN_MP3_RX = 27;  // 27 => Mp3 TX
+SoftwareSerial softwareSerial(PIN_MP3_RX, PIN_MP3_TX);
 
-DFRobotDFPlayerMini myDFPlayer;
+// Create the Player object
+DFRobotDFPlayerMini player;
+
 void printDetail(uint8_t type, int value);
 
 void setup() {
 
+  // Init USB serial port for debugging
   Serial.begin(115200);
+  // Init serial port for DFPlayer Mini
+  softwareSerial.begin(9600);
 
+  // Start communication with DFPlayer Mini
+  if (player.begin(softwareSerial)) {
+    Serial.println("OK");
 
-  FPSerial.begin(9600);
-  myDFPlayer.begin(FPSerial, true);
-
-
-
-
-  Serial.begin(115200);
-
-
-  Serial.println(F("DFPlayer Mini online."));
-
-  myDFPlayer.volume(30);  //Set volume value. From 0 to 30
-  myDFPlayer.play(1);     //Play the first mp3
+    // Set volume to maximum (0 to 30).
+    player.volume(20);
+    // Play the first MP3 file on the SD card
+    // player.play(1);
+  } else {
+    Serial.println("Connecting to DFPlayer Mini failed!");
+    Serial.println("Esperar.... (No siempre es correcto este mensaje)");
+  }
 }
 
 void loop() {
+
+  // Una forma simple de ejecutar mp3
+  // player.play(random(1, 3));
+  // delay(10000); // Este delay tiene que ser mayor a la duracion del MP3
+
+
   static unsigned long timer = millis();
 
   if (millis() - timer > 5000) {
     timer = millis();
-    myDFPlayer.next();  //Play next mp3 every 3 second. 
+    player.next();  //Play next mp3 every 3 second. 
     // nota: para las pruebas puse un archivo 001.mp3 en la raiz de la SD
     // y otro distinto tambien llamado 001.mp3 en una carpeta llamada "mp3"
     // el script los reproduce secuencialmente 
   }
 
-  if (myDFPlayer.available()) {
-    printDetail(myDFPlayer.readType(), myDFPlayer.read());  //Print the detail message from DFPlayer to handle different errors and states.
+  if (player.available()) {
+    printDetail(player.readType(), player.read());  //Print the detail message from DFPlayer to handle different errors and states.
   }
+
 }
 
 void printDetail(uint8_t type, int value) {
