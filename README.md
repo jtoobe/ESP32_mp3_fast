@@ -10,4 +10,7 @@ Hay que leer la placa!!! El HW-247A funciona con la libreria
 https://github.com/enjoyneering/DFPlayer (para el ESP32 usar el ejemplo de la libreria "DFPlayer_STM32_basic")
 El pinout es exactamente el mismo !!!!
 
+Hay una forma de hacer que el reproductor funcione en forma manual:
+Con un cable dupont hacer un toque entre gnd y el pin IO_2, esto tendria que reproducir el primer archivo de la SD
+
 
